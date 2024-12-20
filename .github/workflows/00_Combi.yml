@@ -1,55 +1,43 @@
-import requests
-import re
+name: Combi
 
-# URL der Webseite, die den Live-Stream enthält
-url = "https://www.nowtv.com.tr/canli-yayin"
+on:
+  schedule:
+    - cron: '10 */3 * * *'
+  workflow_dispatch:
 
-def fetch_website_content(url):
-    response = requests.get(url)
-    if response.status_code == 200:
-        return response.text
-    else:
-        print("Failed to fetch the website content.")
-        return None
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-def extract_dai_url(content):
-    # Regulärer Ausdruck, um die daiUrl von der neuen Seite zu extrahieren
-    match = re.search(r"daiUrl\s*:\s*'(https://nowtv-live-ad\.ercdn\.net/nowtv/playlist\.m3u8\?st=[^']+)'", content)
-    if match:
-        return match.group(1)
-    else:
-        print("daiUrl not found in the content.")
-        return None
+    steps:
+      - uses: actions/checkout@v3
 
-def create_m3u8_content(dai_url):
-    m3u8_content = [
-        "#EXTM3U",
-        "#EXTINF:-1, NOW",
-        dai_url
-    ]
-    return "\n".join(m3u8_content)
+      - name: config
+        run: |
+          git config --global user.email "<>"
+          git config --global user.name "estar bot"
 
-def main():
-    site_content = fetch_website_content(url)
-    if site_content:
-        dai_url = extract_dai_url(site_content)
-        if dai_url:
-            m3u8_content = create_m3u8_content(dai_url)
-            with open("output/02_now.m3u8", "w") as f:
-                f.write(m3u8_content)
-            print("Generated 02_now.m3u8 content:")
-            print(m3u8_content)
-            
-            # Extrahiere die URLs aus der Datei und spiele sie ab (simuliert)
-            urls = extract_urls_from_m3u8(m3u8_content)
-            for url in urls:
-                print(f"Playing URL: {url}")
-                # Hier würdest du die URL tatsächlich abspielen (z.B. mit VLC oder einem anderen Player)
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
 
-def extract_urls_from_m3u8(content):
-    # Extrahiere die URLs aus dem M3U8-Inhalt
-    urls = re.findall(r'https://nowtv-live-ad\.ercdn\.net/nowtv/[^"]+', content)
-    return urls
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          
+      - name: Install requests module
+        run: python3 -m pip install requests
 
-if __name__ == "__main__":
-    main()
+      - name: Execute Python script
+        run: python3 code/00_Combi.py > output/00_Playlist.m3u8
+
+      - name: git add
+        run: |
+          git add -A
+          ls -la 
+      - name: commit & push
+        run: |
+          git pull origin main
+          git commit -m "estar updated"
+          git push origin main
