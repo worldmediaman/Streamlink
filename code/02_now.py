@@ -33,8 +33,9 @@ def modify_content(content):
     lines = content.split("\n")
     modified_content = ""
     for line in lines:
-        if line.startswith("live_"):
-            modified_content += line + "\n"
+        if line.startswith("nowtv_"):
+            full_url = line
+            modified_content += full_url + "\n"
         else:
             modified_content += line + "\n"
     return modified_content
@@ -44,7 +45,6 @@ def main():
     if site_content:
         live_url = extract_live_url(site_content)
         if live_url:
-            print("Extracted live URL:", live_url)
             stream_content = fetch_stream_content(live_url)
             if stream_content:
                 modified_content = modify_content(stream_content)
