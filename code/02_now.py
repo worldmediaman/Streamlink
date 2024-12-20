@@ -14,7 +14,7 @@ def fetch_website_content(url):
 
 def extract_dai_url(content):
     # Regulärer Ausdruck, um die daiUrl von der neuen Seite zu extrahieren
-    match = re.search(r"daiUrl\s*:\s*'(https://nowtv-live-ad\.ercdn\.net/nowtv/playlist\.m3u8\?st=[^']+)'", content)
+    match = re.search(r"daiUrl\s*:\s*'(https://nowtv-live-ad\.ercdn\.net/nowtv/playlist\.m3u8\?st=[^']+&e=\d+)'", content)
     if match:
         return match.group(1)
     else:
@@ -22,10 +22,18 @@ def extract_dai_url(content):
         return None
 
 def create_m3u8_content(dai_url):
+    base_url = "https://nowtv-live-ad.ercdn.net/nowtv/"
+    query_params = dai_url.split('?')[1]
     m3u8_content = [
         "#EXTM3U",
-        "#EXTINF:-1, TEST",
-        dai_url
+        "#EXT-X-VERSION:3",
+        "#EXT-X-INDEPENDENT-SEGMENTS",
+        "#EXT-X-STREAM-INF:PROGRAM-ID=2850,AVERAGE-BANDWIDTH=950000,BANDWIDTH=1050000,NAME=720p,RESOLUTION=1280x720",
+        f"{base_url}nowtv_720p.m3u8?{query_params}",
+        "#EXT-X-STREAM-INF:PROGRAM-ID=2850,AVERAGE-BANDWIDTH=700000,BANDWIDTH=800000,NAME=480p,RESOLUTION=854x480",
+        f"{base_url}nowtv_480p.m3u8?{query_params}",
+        "#EXT-X-STREAM-INF:PROGRAM-ID=2850,AVERAGE-BANDWIDTH=500000,BANDWIDTH=550000,NAME=360p,RESOLUTION=640x360",
+        f"{base_url}nowtv_360p.m3u8?{query_params}"
     ]
     return "\n".join(m3u8_content)
 
