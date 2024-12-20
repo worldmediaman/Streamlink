@@ -1,30 +1,34 @@
 import requests
+import re
+import time
 
-# URL der Datei auf GitHub
-url = "https://raw.githubusercontent.com/worldmediaman/Streamlink/main/output/02_now.m3u8"
+# URL der Webseite, die den Live-Stream enthält
+url = "https://www.nowtv.com.tr/canli-yayin"
 
-def fetch_file_content(url):
-    try:
-        response = requests.get(url)
-        response.raise_for_status()  # Überprüft, ob die Anfrage erfolgreich war
+def fetch_website_content(url):
+    response = requests.get(url)
+    if response.status_code == 200:
         return response.text
-    except requests.exceptions.RequestException as e:
-        print(f"Failed to fetch the file content: {e}")
+    else:
+        print("Failed to fetch the website content.")
         return None
 
-def main():
-    file_content = fetch_file_content(url)
-    if file_content:
-        # Direkt den Inhalt ausgeben
-        print("Fetched File Content:")
-        print(file_content)
-        
-        # Speichern in einer Datei
-        with open("output/fetched_now.m3u8", "w") as f:
-            f.write(file_content)
-        print("\nFetched content saved to 'output/fetched_now.m3u8'")
+def extract_dai_url(content):
+    # Regulärer Ausdruck, um die daiUrl von der neuen Seite zu extrahieren
+    match = re.search(r"daiUrl\s*:\s*'(https://nowtv-live-ad\.ercdn\.net/nowtv/playlist\.m3u8\?st=[^']+)'", content)
+    if match:
+        return match.group(1)
     else:
-        print("No content fetched.")
+        print("daiUrl not found in the content.")
+        return None
 
-if __name__ == "__main__":
-    main()
+def create_m3u8_content(dai_url):
+    # Parameter extrahieren
+    base_url = "https://nowtv-live-ad.ercdn.net/nowtv/"
+    query_params = dai_url.split('?')[1]
+    
+    # Ablaufzeit berechnen
+    expiry_time = int(time.time()) + 3600  # Ablaufzeit in 1 Stunde
+    query_params = f"{query_params}&e={expiry_time}"
+    
+    m3u8_content = 
