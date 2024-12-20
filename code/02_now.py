@@ -24,7 +24,7 @@ def extract_dai_url(content):
 def create_m3u8_content(dai_url):
     m3u8_content = [
         "#EXTM3U",
-        "#EXTINF:-1, TEST",
+        "#EXTINF:-1, NOW",
         dai_url
     ]
     return "\n".join(m3u8_content)
