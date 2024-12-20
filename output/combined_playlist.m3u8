@@ -1,5 +1,7 @@
 #EXTM3U
-#EXT-X-VERSION:3 , TEST
+#EXT-X-VERSION:3
+#EXTM3U
+#EXT-X-VERSION:3
 #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=3000000,RESOLUTION=1920x1080
 https://mn-nl.mncdn.com/dogusdyg_eurostar/live_1080p3000000kbps/index.m3u8?st=_IHf9Q3QFjgPwU4vqyBJAg&e=1734805946
 #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=1500000,RESOLUTION=1280x720
@@ -10,4 +12,5 @@ https://mn-nl.mncdn.com/dogusdyg_eurostar/live_480p900000kbps/index.m3u8?st=_IHf
 
 
 #EXTINF:-1, NOW
-https://nowtv-live-ad.ercdn.net/nowtv/playlist.m3u8?st=s7sGsyQIs26P5R-AaefWXQ&e=1734741942
+https://nowtv-live-ad.ercdn.net/nowtv/playlist.m3u8?st=2-LkG7Xu2a-sci7mTBgE4A&e=1734743177
+
