@@ -1,6 +1,5 @@
 import requests
 import re
-import time
 
 # URL der Webseite, die den Live-Stream enthält
 url = "https://www.nowtv.com.tr/canli-yayin"
@@ -23,30 +22,21 @@ def extract_dai_url(content):
         return None
 
 def create_m3u8_content(dai_url):
-    # Parameter extrahieren
-    base_url = "https://nowtv-live-ad.ercdn.net/nowtv/"
-    params = dai_url.split('?')[1]
-    params_dict = dict(param.split('=') for param in params.split('&'))
-    
-    # Ablaufzeit berechnen
-    expiry_time = int(time.time()) + 3600  # Ablaufzeit in 1 Stunde
-    params_dict['e'] = str(expiry_time)
-    
-    # Reihenfolge der Parameter sicherstellen
-    query_params = f"e={params_dict['e']}&st={params_dict['st']}"
-    
     m3u8_content = [
         "#EXTM3U",
-        "#EXT-X-VERSION:3",
-        "#EXT-X-INDEPENDENT-SEGMENTS",
-        "#EXT-X-STREAM-INF:PROGRAM-ID=2850,AVERAGE-BANDWIDTH=950000,BANDWIDTH=1050000,NAME=720p,RESOLUTION=1280x720",
-        f"{base_url}nowtv_720p.m3u8?{query_params}",
-        "#EXT-X-STREAM-INF:PROGRAM-ID=2850,AVERAGE-BANDWIDTH=700000,BANDWIDTH=800000,NAME=480p,RESOLUTION=854x480",
-        f"{base_url}nowtv_480p.m3u8?{query_params}",
-        "#EXT-X-STREAM-INF:PROGRAM-ID=2850,AVERAGE-BANDWIDTH=500000,BANDWIDTH=550000,NAME=360p,RESOLUTION=640x360",
-        f"{base_url}nowtv_360p.m3u8?{query_params}"
+        "#EXTINF:-1, NOW",
+        dai_url
     ]
     return "\n".join(m3u8_content)
+
+def fetch_and_save_url_content(dai_url):
+    response = requests.get(dai_url)
+    if response.status_code == 200:
+        with open("output/fetched_content.m3u8", "w") as f:
+            f.write(response.text)
+        print("Fetched content saved to 'output/fetched_content.m3u8'")
+    else:
+        print("Failed to fetch the content from the URL.")
 
 def main():
     site_content = fetch_website_content(url)
@@ -57,6 +47,9 @@ def main():
             with open("output/02_now.m3u8", "w") as f:
                 f.write(m3u8_content)
             print(m3u8_content)
+            
+            # Rufe den Inhalt der generierten URL ab und speichere ihn
+            fetch_and_save_url_content(dai_url)
 
 if __name__ == "__main__":
     main()
