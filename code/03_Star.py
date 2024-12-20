@@ -1,34 +1,42 @@
 import requests
 import re
+from bs4 import BeautifulSoup
 
-base_url = "https://mn-nl.mncdn.com/dogusdyg_star/"
-url = "https://www.startv.com.tr/canli-yayin"
+url = "https://www.startv.com.tr/canli-izle"
 
 def fetch_website_content(url):
     response = requests.get(url)
     if response.status_code == 200:
+        print("Website content fetched successfully.")
         return response.text
     else:
         print("Failed to fetch the website content.")
         return None
 
 def extract_live_url(content):
-    match = re.search(r'liveUrl = \'(.*?)\'', content)
-    if match:
-        return match.group(1)
-    else:
-        print("Live URL not found in the content.")
-        return None
+    print("Extracting live URL from content...")
+    soup = BeautifulSoup(content, "html.parser")
+    script_tags = soup.find_all("script")
+    for script in script_tags:
+        if "liveUrl" in script.string:
+            match = re.search(r'liveUrl = \'(.*?)\'', script.string)
+            if match:
+                print("Live URL found:", match.group(1))
+                return match.group(1)
+    print("Live URL not found in the content.")
+    return None
 
 def fetch_stream_content(url):
     response = requests.get(url)
     if response.status_code == 200:
+        print("Stream content fetched successfully.")
         return response.text
     else:
         print("Failed to fetch content.")
         return None
 
 def modify_content(content, base_url):
+    print("Modifying stream content...")
     lines = content.split("\n")
     modified_content = ""
     for line in lines:
@@ -46,7 +54,9 @@ def main():
         if live_url:
             stream_content = fetch_stream_content(live_url)
             if stream_content:
+                base_url = "https://mn-nl.mncdn.com/dogusdyg_star/"
                 modified_content = modify_content(stream_content, base_url)
+                print("Modified Content:")
                 print(modified_content)
 
 if __name__ == "__main__":
