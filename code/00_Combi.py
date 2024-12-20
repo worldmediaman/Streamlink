@@ -25,11 +25,15 @@ def extract_dai_url(content):
 def create_m3u8_content(dai_url):
     # Parameter extrahieren
     base_url = "https://nowtv-live-ad.ercdn.net/nowtv/"
-    query_params = dai_url.split('?')[1]
+    params = dai_url.split('?')[1]
+    params_dict = dict(param.split('=') for param in params.split('&'))
     
     # Ablaufzeit berechnen
     expiry_time = int(time.time()) + 3600  # Ablaufzeit in 1 Stunde
-    query_params = f"{query_params}&e={expiry_time}"
+    params_dict['e'] = str(expiry_time)
+    
+    # Reihenfolge der Parameter sicherstellen
+    query_params = f"e={params_dict['e']}&st={params_dict['st']}"
     
     m3u8_content = [
         "#EXTM3U",
