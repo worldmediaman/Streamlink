@@ -1,5 +1,6 @@
 import requests
 import re
+import time
 
 # URL der Webseite, die den Live-Stream enthält
 url = "https://www.nowtv.com.tr/canli-yayin"
@@ -22,8 +23,14 @@ def extract_dai_url(content):
         return None
 
 def create_m3u8_content(dai_url):
+    # Dynamisch generierte Parameter
+    current_time = int(time.time())
+    expiry_time = current_time + 3600  # Ablaufzeit in 1 Stunde
+    token = "Dynamisch generiertes Token"  # Ersetze dies durch die tatsächliche Logik zur Token-Generierung
+    
     base_url = "https://nowtv-live-ad.ercdn.net/nowtv/"
-    query_params = dai_url.split('?')[1]
+    query_params = f"st={token}&e={expiry_time}"
+    
     m3u8_content = [
         "#EXTM3U",
         "#EXT-X-VERSION:3",
