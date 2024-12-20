@@ -12,13 +12,13 @@ def fetch_website_content(url):
         print("Failed to fetch the website content.")
         return None
 
-def extract_live_url(content):
-    # Aktualisiere den regulären Ausdruck, um die Live-URL von der neuen Seite zu extrahieren
-    match = re.search(r'(https://nowtv\.daioncdn\.net/nowtv/nowtv\.m3u8\?ce=3&app=[^\'"]+)', content)
+def extract_dai_url(content):
+    # Aktualisiere den regulären Ausdruck, um die DAI-URL von der neuen Seite zu extrahieren
+    match = re.search(r'(https://nowtv-live-ad\.ercdn\.net/nowtv/playlist\.m3u8\?st=[^\'"]+)', content)
     if match:
         return match.group(1)
     else:
-        print("Live URL not found in the content.")
+        print("DAI URL not found in the content.")
         return None
 
 def fetch_stream_content(url):
@@ -34,8 +34,7 @@ def modify_content(content):
     modified_content = ""
     for line in lines:
         if line.startswith("nowtv_"):
-            full_url = line
-            modified_content += full_url + "\n"
+            modified_content += line + "\n"
         else:
             modified_content += line + "\n"
     return modified_content
@@ -43,12 +42,14 @@ def modify_content(content):
 def main():
     site_content = fetch_website_content(url)
     if site_content:
-        live_url = extract_live_url(site_content)
-        if live_url:
-            stream_content = fetch_stream_content(live_url)
+        dai_url = extract_dai_url(site_content)
+        if dai_url:
+            print("Extracted DAI URL:", dai_url)
+            stream_content = fetch_stream_content(dai_url)
             if stream_content:
                 modified_content = modify_content(stream_content)
-                print(modified_content)
+                with open("output/02_now.m3u8", "w") as f:
+                    f.write(modified_content)
 
 if __name__ == "__main__":
     main()
