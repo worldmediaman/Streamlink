@@ -13,8 +13,7 @@ def fetch_website_content(url):
         return None
 
 def extract_live_url(content):
-    # Aktualisiere den regulären Ausdruck, um die Live-URL von der neuen Seite zu extrahieren
-    match = re.search(r"daionUrl\s*:\s*\(mobilecheck\(\) == true \? '(https://nowtv\.daioncdn\.net/nowtv/nowtv\.m3u8\?ce=3&app=mobile_web&st=[^']+)' : '(https://nowtv\.daioncdn\.net/nowtv/nowtv\.m3u8\?ce=3&app=desktop_web&st=[^']+)'", content)
+    match = re.search(r"daionUrl\s*:\s*'(https://nowtv\.daioncdn\.net/nowtv/nowtv\.m3u8\?ce=3&app=[^']+)'", content)
     if match:
         return match.group(1)
     else:
@@ -22,17 +21,16 @@ def extract_live_url(content):
         return None
 
 def create_m3u8_content(live_url):
-    base_url = live_url.split('?')[0]  # Basis-URL extrahieren
-    query_params = live_url.split('?')[1]  # Query-Parameter extrahieren
+    # URLs für verschiedene Auflösungen definieren
     m3u8_content = [
         "#EXTM3U",
         "#EXT-X-VERSION:3",
         "#EXT-X-STREAM-INF:BANDWIDTH=1050000,AVERAGE-BANDWIDTH=950000,RESOLUTION=1280x720",
-        f"{base_url}?{query_params}",
+        f"{live_url}",
         "#EXT-X-STREAM-INF:BANDWIDTH=800000,AVERAGE-BANDWIDTH=700000,RESOLUTION=854x480",
-        f"{base_url}?{query_params}",
+        f"{live_url}",
         "#EXT-X-STREAM-INF:BANDWIDTH=550000,AVERAGE-BANDWIDTH=500000,RESOLUTION=640x360",
-        f"{base_url}?{query_params}"
+        f"{live_url}"
     ]
     return "\n".join(m3u8_content)
 
