@@ -20,15 +20,17 @@ def extract_dai_url(content):
         return None
 
 def create_m3u8_content(dai_url):
+    base_url = dai_url.split('?')[0]
+    query_params = dai_url.split('?')[1]
     m3u8_content = [
         "#EXTM3U",
         "#EXT-X-VERSION:3",
         "#EXT-X-STREAM-INF:BANDWIDTH=1050000,AVERAGE-BANDWIDTH=950000,RESOLUTION=1280x720",
-        dai_url,
+        f"{base_url}?{query_params}&resolution=720p",
         "#EXT-X-STREAM-INF:BANDWIDTH=800000,AVERAGE-BANDWIDTH=700000,RESOLUTION=854x480",
-        dai_url,
+        f"{base_url}?{query_params}&resolution=480p",
         "#EXT-X-STREAM-INF:BANDWIDTH=550000,AVERAGE-BANDWIDTH=500000,RESOLUTION=640x360",
-        dai_url
+        f"{base_url}?{query_params}&resolution=360p"
     ]
     return "\n".join(m3u8_content)
 
@@ -38,7 +40,7 @@ def main():
         dai_url = extract_dai_url(site_content)
         if dai_url:
             m3u8_content = create_m3u8_content(dai_url)
-            with open("output/02_now.m3u8", "w") as f:
+            with open("output/now.m3u8", "w") as f:
                 f.write(m3u8_content)
             print(m3u8_content)
 
