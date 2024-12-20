@@ -1,6 +1,15 @@
+import subprocess
+import sys
+
+# Sicherstellen, dass beautifulsoup4 installiert ist
+try:
+    from bs4 import BeautifulSoup
+except ImportError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "beautifulsoup4"])
+    from bs4 import BeautifulSoup
+
 import requests
 import re
-from bs4 import BeautifulSoup
 
 url = "https://www.startv.com.tr/canli-izle"
 
