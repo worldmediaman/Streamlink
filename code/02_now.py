@@ -1,7 +1,7 @@
 import time
 
 # Feste Parameter (ersetzt durch funktionierende Beispiele)
-st_token = "uibl2B5lvUFmYHwmi7MGlQ"
+st_token = "5g0ZFPxzUckSxxPRbtc8fw"
 expiry_time = int(time.time()) + 3600  # Ablaufzeit in 1 Stunde
 
 base_url = "https://nowtv-live-ad.ercdn.net/nowtv/"
