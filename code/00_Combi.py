@@ -1,23 +1,55 @@
-# Direktes Beispiel der funktionierenden URL
-url_720p = "https://nowtv-live-ad.ercdn.net/nowtv/nowtv_720p.m3u8?e=1734781560&st=h-xrRokfmtw4t7J7tEc-zg"
-url_480p = "https://nowtv-live-ad.ercdn.net/nowtv/nowtv_480p.m3u8?e=1734781560&st=h-xrRokfmtw4t7J7tEc-zg"
-url_360p = "https://nowtv-live-ad.ercdn.net/nowtv/nowtv_360p.m3u8?e=1734781560&st=h-xrRokfmtw4t7J7tEc-zg"
+import requests
+import re
 
-# Erstellen der M3U8-Datei
-m3u8_content = [
-    "#EXTM3U",
-    "#EXT-X-VERSION:3",
-    "#EXT-X-INDEPENDENT-SEGMENTS",
-    "#EXT-X-STREAM-INF:PROGRAM-ID=2850,AVERAGE-BANDWIDTH=950000,BANDWIDTH=1050000,NAME=720p,RESOLUTION=1280x720",
-    url_720p,
-    "#EXT-X-STREAM-INF:PROGRAM-ID=2850,AVERAGE-BANDWIDTH=700000,BANDWIDTH=800000,NAME=480p,RESOLUTION=854x480",
-    url_480p,
-    "#EXT-X-STREAM-INF:PROGRAM-ID=2850,AVERAGE-BANDWIDTH=500000,BANDWIDTH=550000,NAME=360p,RESOLUTION=640x360",
-    url_360p
-]
+# URL der Webseite, die den Live-Stream enthält
+url = "https://www.nowtv.com.tr/canli-yayin"
 
-# Schreiben in eine Datei
-with open("output/02_now_fixed.m3u8", "w") as f:
-    f.write("\n".join(m3u8_content))
+def fetch_website_content(url):
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.text
+    else:
+        print("Failed to fetch the website content.")
+        return None
 
-print("\n".join(m3u8_content))
+def extract_dai_url(content):
+    # Regulärer Ausdruck, um die daiUrl von der neuen Seite zu extrahieren
+    match = re.search(r"daiUrl\s*:\s*'(https://nowtv-live-ad\.ercdn\.net/nowtv/playlist\.m3u8\?st=[^']+)'", content)
+    if match:
+        return match.group(1)
+    else:
+        print("daiUrl not found in the content.")
+        return None
+
+def create_m3u8_content(dai_url):
+    m3u8_content = [
+        "#EXTM3U",
+        "#EXTINF:-1, NOW",
+        dai_url
+    ]
+    return "\n".join(m3u8_content)
+
+def main():
+    site_content = fetch_website_content(url)
+    if site_content:
+        dai_url = extract_dai_url(site_content)
+        if dai_url:
+            m3u8_content = create_m3u8_content(dai_url)
+            with open("output/02_now.m3u8", "w") as f:
+                f.write(m3u8_content)
+            print("Generated 02_now.m3u8 content:")
+            print(m3u8_content)
+            
+            # Extrahiere die URLs aus der Datei und spiele sie ab (simuliert)
+            urls = extract_urls_from_m3u8(m3u8_content)
+            for url in urls:
+                print(f"Playing URL: {url}")
+                # Hier würdest du die URL tatsächlich abspielen (z.B. mit VLC oder einem anderen Player)
+
+def extract_urls_from_m3u8(content):
+    # Extrahiere die URLs aus dem M3U8-Inhalt
+    urls = re.findall(r'https://nowtv-live-ad\.ercdn\.net/nowtv/[^"]+', content)
+    return urls
+
+if __name__ == "__main__":
+    main()
