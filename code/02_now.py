@@ -13,13 +13,24 @@ def fetch_website_content(url):
         return None
 
 def extract_dai_url(content):
-    # Regulärer Ausdruck, um die vollständige URL mit allen Parametern zu extrahieren
-    match = re.search(r"daiUrl\s*:\s*'(https://nowtv-live-ad\.ercdn\.net/nowtv/nowtv_[^']+)'", content)
+    # Debugging: Ausgabe eines Teils des Inhalts, um zu sehen, wie er aussieht
+    print("Website Content Preview:", content[:500])
+    
+    # Regulärer Ausdruck, um die daiUrl zu extrahieren
+    match = re.search(r"daiUrl\s*:\s*'(https://nowtv-live-ad\.ercdn\.net/nowtv/playlist\.m3u8\?st=[^']+&e=\d+)'", content)
     if match:
         return match.group(1)
     else:
-        print("daiUrl not found in the content.")
-        return None
+        print("daiUrl not found in the content with regex1.")
+    
+    # Alternativer Versuch, die daiUrl zu extrahieren
+    match = re.search(r"https://nowtv-live-ad\.ercdn\.net/nowtv/playlist\.m3u8\?st=[^']+&e=\d+", content)
+    if match:
+        return match.group(0)
+    else:
+        print("daiUrl not found in the content with regex2.")
+    
+    return None
 
 def create_m3u8_content(dai_url):
     base_url = "https://nowtv-live-ad.ercdn.net/nowtv/"
