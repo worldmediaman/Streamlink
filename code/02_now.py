@@ -21,11 +21,22 @@ def extract_dai_url(content):
         print("daiUrl not found in the content.")
         return None
 
-def create_m3u8_content(dai_url):
+def create_m3u8_content(dai_url, resolution):
+    if resolution == "best":
+        resolution_tag = "#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=3000000,RESOLUTION=1920x1080"
+        stream_url = dai_url.replace("playlist", "live_1080p3000000kbps/index")
+    elif resolution == "1280":
+        resolution_tag = "#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=1500000,RESOLUTION=1280x720"
+        stream_url = dai_url.replace("playlist", "live_720p1500000kbps/index")
+    else:
+        resolution_tag = "#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=3000000,RESOLUTION=1920x1080"
+        stream_url = dai_url.replace("playlist", "live_1080p3000000kbps/index")
+
     m3u8_content = [
         "#EXTM3U",
-        "#EXTINF:-1, NOW",
-        dai_url
+        "#EXT-X-VERSION:3",
+        resolution_tag,
+        stream_url
     ]
     return "\n".join(m3u8_content)
 
@@ -34,7 +45,9 @@ def main():
     if site_content:
         dai_url = extract_dai_url(site_content)
         if dai_url:
-            m3u8_content = create_m3u8_content(dai_url)
+            # Passe die gewünschte Auflösung hier an: "best" oder "1280"
+            resolution = "best"
+            m3u8_content = create_m3u8_content(dai_url, resolution)
             with open("output/02_now.m3u8", "w") as f:
                 f.write(m3u8_content)
             print(m3u8_content)
