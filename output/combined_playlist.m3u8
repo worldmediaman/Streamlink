@@ -1,0 +1,5 @@
+#EXTM3U
+#EXTINF:-1, TEST 1
+https://raw.githubusercontent.com/worldmediaman/Streamlink/refs/heads/main/output/01_estar.m3u8
+#EXTINF:-1, TEST 2
+https://raw.githubusercontent.com/worldmediaman/Streamlink/refs/heads/main/output/02_now.m3u8
