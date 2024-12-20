@@ -2,7 +2,7 @@ name: now
 
 on:
   schedule:
-    - cron: '10 */20 * * *'
+    - cron: '10 */3 * * *' # Ändere den Cron-Job, um alle 3 Stunden zu laufen
   workflow_dispatch:
 
 jobs:
@@ -26,6 +26,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install streamlink requests
+
+      - name: Check Python syntax
+        run: python -m py_compile code/02_now.py
 
       - name: Execute Python script
         run: python3 code/02_now.py > output/02_now.m3u8
