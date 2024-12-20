@@ -12,7 +12,6 @@ def fetch_website_content(url):
         return None
 
 def extract_dai_url(content):
-    # Aktualisiere den regulären Ausdruck, um die daiUrl von der neuen Seite zu extrahieren
     match = re.search(r"daiUrl\s*:\s*'(https://nowtv-live-ad\.ercdn\.net/nowtv/playlist\.m3u8\?st=[^']+)'", content)
     if match:
         return match.group(1)
@@ -20,13 +19,28 @@ def extract_dai_url(content):
         print("daiUrl not found in the content.")
         return None
 
+def create_m3u8_content(dai_url):
+    m3u8_content = [
+        "#EXTM3U",
+        "#EXT-X-VERSION:3",
+        "#EXT-X-STREAM-INF:BANDWIDTH=1050000,AVERAGE-BANDWIDTH=950000,RESOLUTION=1280x720",
+        dai_url,
+        "#EXT-X-STREAM-INF:BANDWIDTH=800000,AVERAGE-BANDWIDTH=700000,RESOLUTION=854x480",
+        dai_url,
+        "#EXT-X-STREAM-INF:BANDWIDTH=550000,AVERAGE-BANDWIDTH=500000,RESOLUTION=640x360",
+        dai_url
+    ]
+    return "\n".join(m3u8_content)
+
 def main():
     site_content = fetch_website_content(url)
     if site_content:
         dai_url = extract_dai_url(site_content)
         if dai_url:
-            print("Extracted daiUrl:", dai_url)
-            # Ausgabe der daiUrl
+            m3u8_content = create_m3u8_content(dai_url)
+            with open("output/now.m3u8", "w") as f:
+                f.write(m3u8_content)
+            print(m3u8_content)
 
 if __name__ == "__main__":
     main()
