@@ -26,11 +26,11 @@ def create_m3u8_content(dai_url):
         "#EXTM3U",
         "#EXT-X-VERSION:3",
         "#EXT-X-STREAM-INF:BANDWIDTH=1050000,AVERAGE-BANDWIDTH=950000,RESOLUTION=1280x720",
-        f"{base_url}?{query_params}&resolution=720p",
+        f"{base_url}?{query_params}&quality=720p",
         "#EXT-X-STREAM-INF:BANDWIDTH=800000,AVERAGE-BANDWIDTH=700000,RESOLUTION=854x480",
-        f"{base_url}?{query_params}&resolution=480p",
+        f"{base_url}?{query_params}&quality=480p",
         "#EXT-X-STREAM-INF:BANDWIDTH=550000,AVERAGE-BANDWIDTH=500000,RESOLUTION=640x360",
-        f"{base_url}?{query_params}&resolution=360p"
+        f"{base_url}?{query_params}&quality=360p"
     ]
     return "\n".join(m3u8_content)
 
