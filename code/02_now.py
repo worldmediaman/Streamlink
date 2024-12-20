@@ -38,7 +38,7 @@ def main():
         dai_url = extract_dai_url(site_content)
         if dai_url:
             m3u8_content = create_m3u8_content(dai_url)
-            with open("output/now.m3u8", "w") as f:
+            with open("output/02_now.m3u8", "w") as f:
                 f.write(m3u8_content)
             print(m3u8_content)
 
