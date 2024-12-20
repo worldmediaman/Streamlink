@@ -1,6 +1,7 @@
 import requests
 import re
 
+# URL der Webseite, die den Live-Stream enthält
 url = "https://www.nowtv.com.tr/canli-yayin"
 
 def fetch_website_content(url):
@@ -12,6 +13,7 @@ def fetch_website_content(url):
         return None
 
 def extract_dai_url(content):
+    # Regulärer Ausdruck, um die daiUrl von der neuen Seite zu extrahieren
     match = re.search(r"daiUrl\s*:\s*'(https://nowtv-live-ad\.ercdn\.net/nowtv/playlist\.m3u8\?st=[^']+)'", content)
     if match:
         return match.group(1)
@@ -20,17 +22,15 @@ def extract_dai_url(content):
         return None
 
 def create_m3u8_content(dai_url):
-    base_url = dai_url.split('?')[0]
+    base_url = "https://nowtv-live-ad.ercdn.net/nowtv/"
     query_params = dai_url.split('?')[1]
     m3u8_content = [
         "#EXTM3U",
         "#EXT-X-VERSION:3",
-        "#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=3000000,RESOLUTION=1920x1080",
-        f"{base_url}/live_1080p3000000kbps/index.m3u8?{query_params}",
         "#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=1500000,RESOLUTION=1280x720",
-        f"{base_url}/live_720p1500000kbps/index.m3u8?{query_params}",
+        f"{base_url}playlist.m3u8?{query_params}&resolution=720p",
         "#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=900000,RESOLUTION=854x480",
-        f"{base_url}/live_480p900000kbps/index.m3u8?{query_params}"
+        f"{base_url}playlist.m3u8?{query_params}&resolution=480p"
     ]
     return "\n".join(m3u8_content)
 
@@ -40,7 +40,7 @@ def main():
         dai_url = extract_dai_url(site_content)
         if dai_url:
             m3u8_content = create_m3u8_content(dai_url)
-            with open("output/now.m3u8", "w") as f:
+            with open("output/02_now.m3u8", "w") as f:
                 f.write(m3u8_content)
             print(m3u8_content)
 
