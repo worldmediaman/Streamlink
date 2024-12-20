@@ -1,5 +1,6 @@
 import requests
 import re
+import time
 
 # URL der Webseite, die den Live-Stream enthält
 url = "https://www.nowtv.com.tr/canli-yayin"
@@ -22,20 +23,32 @@ def extract_dai_url(content):
         return None
 
 def create_m3u8_content(dai_url):
+    # Parameter extrahieren
+    base_url = "https://nowtv-live-ad.ercdn.net/nowtv/"
+    params = dai_url.split('?')[1]
+    params_dict = dict(param.split('=') for param in params.split('&'))
+    
+    # Ablaufzeit berechnen
+    expiry_time = int(time.time()) + 3600  # Ablaufzeit in 1 Stunde
+    params_dict['e'] = str(expiry_time)
+    
+    # Reihenfolge der Parameter sicherstellen
+    query_params = f"e={params_dict['e']}&st={params_dict['st']}"
+    
     m3u8_content = [
         "#EXTM3U",
-        "#EXTINF:-1, NOW",
-        dai_url
+        "#EXT-X-VERSION:3",
+        "#EXT-X-INDEPENDENT-SEGMENTS",
+        "#EXT-X-STREAM-INF:PROGRAM-ID=2850,AVERAGE-BANDWIDTH=950000,BANDWIDTH=1050000,NAME=720p,RESOLUTION=1280x720",
+        f"{base_url}nowtv_720p.m3u8?{query_params}",
+        "#EXT-X-STREAM-INF:PROGRAM-ID=2850,AVERAGE-BANDWIDTH=700000,BANDWIDTH=800000,NAME=480p,RESOLUTION=854x480",
+        f"{base_url}nowtv_480p.m3u8?{query_params}",
+        "#EXT-X-STREAM-INF:PROGRAM-ID=2850,AVERAGE-BANDWIDTH=500000,BANDWIDTH=550000,NAME=360p,RESOLUTION=640x360",
+        f"{base_url}nowtv_360p.m3u8?{query_params}"
     ]
     return "\n".join(m3u8_content)
 
-def extract_urls_from_m3u8(content):
-    # Extrahiere die URLs aus dem M3U8-Inhalt
-    urls = re.findall(r'https://nowtv-live-ad\.ercdn\.net/nowtv/[^"]+', content)
-    return urls
-
 def main():
-    global url  # Sicherstellen, dass die url-Variable global verfügbar ist
     site_content = fetch_website_content(url)
     if site_content:
         dai_url = extract_dai_url(site_content)
@@ -43,14 +56,7 @@ def main():
             m3u8_content = create_m3u8_content(dai_url)
             with open("output/02_now.m3u8", "w") as f:
                 f.write(m3u8_content)
-            print("Generated 02_now.m3u8 content:")
             print(m3u8_content)
-            
-            # Extrahiere die URLs aus der Datei und spiele sie ab (simuliert)
-            urls = extract_urls_from_m3u8(m3u8_content)
-            for url in urls:
-                print(f"Playing URL: {url}")
-                # Hier würdest du die URL tatsächlich abspielen (z.B. mit VLC oder einem anderen Player)
 
 if __name__ == "__main__":
     main()
