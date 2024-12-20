@@ -35,13 +35,16 @@ jobs:
 
       - name: git add
         run: |
+          set -x
           git add -A
           ls -la 
-          
+          set +x
+
       - name: commit & push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -x
           git pull origin main
           if git diff-index --quiet HEAD --; then
             echo "No changes to commit, ending workflow successfully."
@@ -49,3 +52,4 @@ jobs:
           else
             git commit -m "now updated"
             git push origin main
+          set +x
