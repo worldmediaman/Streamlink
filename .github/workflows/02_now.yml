@@ -2,7 +2,7 @@ name: now
 
 on:
   schedule:
-    - cron: '10 */3 * * *'
+    - cron: '10 */20 * * *'
   workflow_dispatch:
 
 jobs:
@@ -14,8 +14,8 @@ jobs:
 
       - name: config
         run: |
-          git config --global user.email "<>"
-          git config --global user.name "estar bot"
+          git config --global user.email "your-email@example.com"
+          git config --global user.name "now bot"
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -25,9 +25,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          
-      - name: Install requests module
-        run: python3 -m pip install requests
+          python -m pip install streamlink requests
 
       - name: Execute Python script
         run: python3 code/02_now.py > output/02_now.m3u8
@@ -38,7 +36,13 @@ jobs:
           ls -la 
           
       - name: commit & push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git pull origin main
-          git commit -m "estar updated"
-          git push origin main
+          if git diff-index --quiet HEAD --; then
+            echo "No changes to commit, ending workflow successfully."
+            exit 0
+          else
+            git commit -m "now updated"
+            git push origin main
