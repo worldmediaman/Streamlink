@@ -13,8 +13,8 @@ def fetch_website_content(url):
         return None
 
 def extract_dai_url(content):
-    # Regulärer Ausdruck, um die daiUrl von der neuen Seite zu extrahieren
-    match = re.search(r"daiUrl\s*:\s*'(https://nowtv-live-ad\.ercdn\.net/nowtv/playlist\.m3u8\?st=[^']+&e=\d+)'", content)
+    # Regulärer Ausdruck, um die vollständige URL mit allen Parametern zu extrahieren
+    match = re.search(r"daiUrl\s*:\s*'(https://nowtv-live-ad\.ercdn\.net/nowtv/nowtv_[^']+)'", content)
     if match:
         return match.group(1)
     else:
