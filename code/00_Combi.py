@@ -29,7 +29,13 @@ def create_m3u8_content(dai_url):
     ]
     return "\n".join(m3u8_content)
 
+def extract_urls_from_m3u8(content):
+    # Extrahiere die URLs aus dem M3U8-Inhalt
+    urls = re.findall(r'https://nowtv-live-ad\.ercdn\.net/nowtv/[^"]+', content)
+    return urls
+
 def main():
+    global url  # Sicherstellen, dass die url-Variable global verfügbar ist
     site_content = fetch_website_content(url)
     if site_content:
         dai_url = extract_dai_url(site_content)
@@ -45,11 +51,6 @@ def main():
             for url in urls:
                 print(f"Playing URL: {url}")
                 # Hier würdest du die URL tatsächlich abspielen (z.B. mit VLC oder einem anderen Player)
-
-def extract_urls_from_m3u8(content):
-    # Extrahiere die URLs aus dem M3U8-Inhalt
-    urls = re.findall(r'https://nowtv-live-ad\.ercdn\.net/nowtv/[^"]+', content)
-    return urls
 
 if __name__ == "__main__":
     main()
