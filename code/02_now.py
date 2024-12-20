@@ -25,12 +25,12 @@ def create_m3u8_content(dai_url):
     m3u8_content = [
         "#EXTM3U",
         "#EXT-X-VERSION:3",
-        "#EXT-X-STREAM-INF:BANDWIDTH=1050000,AVERAGE-BANDWIDTH=950000,RESOLUTION=1280x720",
-        f"{base_url}?{query_params}&quality=720p",
-        "#EXT-X-STREAM-INF:BANDWIDTH=800000,AVERAGE-BANDWIDTH=700000,RESOLUTION=854x480",
-        f"{base_url}?{query_params}&quality=480p",
-        "#EXT-X-STREAM-INF:BANDWIDTH=550000,AVERAGE-BANDWIDTH=500000,RESOLUTION=640x360",
-        f"{base_url}?{query_params}&quality=360p"
+        "#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=3000000,RESOLUTION=1920x1080",
+        f"{base_url}/live_1080p3000000kbps/index.m3u8?{query_params}",
+        "#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=1500000,RESOLUTION=1280x720",
+        f"{base_url}/live_720p1500000kbps/index.m3u8?{query_params}",
+        "#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=900000,RESOLUTION=854x480",
+        f"{base_url}/live_480p900000kbps/index.m3u8?{query_params}"
     ]
     return "\n".join(m3u8_content)
 
