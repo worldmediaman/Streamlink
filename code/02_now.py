@@ -22,15 +22,10 @@ def extract_dai_url(content):
         return None
 
 def create_m3u8_content(dai_url):
-    base_url = "https://nowtv-live-ad.ercdn.net/nowtv/"
-    query_params = dai_url.split('?')[1]
     m3u8_content = [
         "#EXTM3U",
-        "#EXT-X-VERSION:3",
-        "#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=1500000,RESOLUTION=1280x720",
-        f"{base_url}playlist.m3u8?{query_params}&resolution=720p",
-        "#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=900000,RESOLUTION=854x480",
-        f"{base_url}playlist.m3u8?{query_params}&resolution=480p"
+        "#EXTINF:-1, TEST",
+        dai_url
     ]
     return "\n".join(m3u8_content)
 
