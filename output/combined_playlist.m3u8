@@ -8,6 +8,7 @@ https://mn-nl.mncdn.com/dogusdyg_eurostar/live_720p1500000kbps/index.m3u8?st=wWc
 https://mn-nl.mncdn.com/dogusdyg_eurostar/live_480p900000kbps/index.m3u8?st=wWcW_oUH83LPEewgZoGlRg&e=1734816135
 
 #EXTM3U
+#EXTINF:-1, STAR
 #EXT-X-VERSION:3
 #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=3000000,RESOLUTION=1920x1080
 https://mn-nl.mncdn.com/dogusdyg_star/live_1080p3000000kbps/index.m3u8?st=p0fNY7IwYEv6qnMfW-jxeQ&e=1734812834
